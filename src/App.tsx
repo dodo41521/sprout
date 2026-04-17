@@ -24,15 +24,11 @@ import {
 const getAssetUrl = (url: string) => {
   if (!url || url.startsWith('http')) return url;
   
-  // Use Vite's BASE_URL and ensure the path is correctly combined
-  // This handles sub-paths on GitHub Pages correctly
-  const base = import.meta.env.BASE_URL;
+  // Clean the path
   const path = url.startsWith('/') ? url.slice(1) : url;
   
-  // Combine base and path, ensuring we don't end up with double slashes
-  // unless base is './'
-  if (base === './') return path;
-  return `${base}${path}`.replace(/\/+/g, '/');
+  // Use relative path with ./ to be most compatible with various hosting setups
+  return `./${path}`;
 };
 
 interface Project {
@@ -466,7 +462,7 @@ export default function App() {
             <p className="font-serif italic text-slate-500 normal-case tracking-normal mb-4">
               "작은 새싹이 커다란 나무가 되듯, 제 이야기도 끊임없이 성장하고 있습니다."
             </p>
-            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.0.5)
+            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.0.6)
           </footer>
         </div>
       </div>
