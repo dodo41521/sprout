@@ -24,8 +24,8 @@ import {
 const getAssetUrl = (url: string) => {
   if (!url || url.startsWith('http')) return url;
   const path = url.startsWith('/') ? url.slice(1) : url;
-  // Use simple relative path as base
-  return `./${path}`;
+  // Use relative path as the absolute base for sub-path hosting
+  return path;
 };
 
 const SmartImage = ({ src, alt, className, onError }: { src: string, alt: string, className?: string, onError: (path: string) => void }) => {
@@ -34,26 +34,24 @@ const SmartImage = ({ src, alt, className, onError }: { src: string, alt: string
 
   const handleLocalError = () => {
     const filename = src.startsWith('/') ? src.slice(1) : src;
-    const base = window.location.origin + window.location.pathname;
     
-    // Try different path patterns common to GitHub Pages
+    // Unique retry patterns to force re-render and path discovery
     if (retryCount === 0) {
-      // Pattern 1: relative to current directory
+      // Attempt 1: Relative to current directory
       setRetryCount(1);
       setCurrentSrc(`./${filename}`);
     } else if (retryCount === 1) {
-      // Pattern 2: absolute path from root
+      // Attempt 2: Direct public folder access (just in case)
       setRetryCount(2);
-      setCurrentSrc(`/${filename}`);
-    } else if (retryCount === 2) {
-      // Pattern 3: relative from origin (most robust for some GH setups)
-      setRetryCount(3);
-      const absoluteUrl = new URL(filename, base).href;
-      setCurrentSrc(absoluteUrl);
-    } else if (retryCount === 3) {
-      // Pattern 4: public prefix
-      setRetryCount(4);
       setCurrentSrc(`./public/${filename}`);
+    } else if (retryCount === 2) {
+      // Attempt 3: Strict repository path for dodo41521.github.io/sprout/
+      setRetryCount(3);
+      setCurrentSrc(`/sprout/${filename}`);
+    } else if (retryCount === 3) {
+      // Attempt 4: Clean filename from root
+      setRetryCount(4);
+      setCurrentSrc(`/${filename}`);
     } else {
       onError(currentSrc);
     }
@@ -67,7 +65,7 @@ const SmartImage = ({ src, alt, className, onError }: { src: string, alt: string
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className={className}
+      className={`${className} bg-slate-100`}
       onError={handleLocalError}
     />
   );
@@ -500,7 +498,7 @@ export default function App() {
             <p className="font-serif italic text-slate-500 normal-case tracking-normal mb-4">
               "작은 새싹이 커다란 나무가 되듯, 제 이야기도 끊임없이 성장하고 있습니다."
             </p>
-            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.0.9)
+            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.1.0)
           </footer>
         </div>
       </div>
