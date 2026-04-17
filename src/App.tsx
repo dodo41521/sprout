@@ -9,7 +9,10 @@ import {
   Leaf, 
   GraduationCap, 
   Award,
-  X
+  X,
+  Compass,
+  Film,
+  Sparkles
 } from "lucide-react";
 
 interface Project {
@@ -91,6 +94,24 @@ const PROJECTS: Project[] = [
     ]
   }
 ];
+
+const GOAL_DETAILS = {
+  "콘텐츠 제작": {
+    title: "콘텐츠 제작",
+    icon: Film,
+    body: "단순히 영상을 만드는 것을 넘어, 사람의 감정과 이야기를 담아내는 콘텐츠를 제작하고 싶습니다.\n\n짧은 영상부터 시작해 점점 더 긴 호흡의 작품으로 확장하며, 나만의 시선과 연출이 담긴 결과물을 만들어내고자 합니다."
+  },
+  "떠돌이 여행가": {
+    title: "떠돌이 여행가",
+    icon: Compass,
+    body: "한 곳에 머무르기보다 다양한 장소를 경험하며 그 안에서 새로운 이야기의 소재를 발견하고 싶습니다.\n\n익숙하지 않은 환경 속에서 느끼는 감정과 순간들을 기록하며, 그 경험을 나만의 콘텐츠로 풀어내는 삶을 살고자 합니다."
+  },
+  "영감의 공간": {
+    title: "영감의 공간",
+    icon: Sparkles,
+    body: "나만의 작업 공간을 만들어 자유롭게 생각하고 창작할 수 있는 환경을 갖고 싶습니다.\n\n그 공간에서 떠오르는 작은 아이디어들을 쌓아가며, 꾸준히 이야기를 만들어내는 창작자가 되고자 합니다."
+  }
+} as const;
 
 const SectionTitle = ({ children, subtitle }: { children: React.ReactNode; subtitle?: string }) => (
   <div className="mb-12 text-left group">
@@ -270,6 +291,46 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
   </motion.div>
 );
 
+const GoalModal = ({ goal, onClose }: { goal: typeof GOAL_DETAILS[keyof typeof GOAL_DETAILS]; onClose: () => void }) => (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm"
+    onClick={onClose}
+  >
+    <motion.div
+      initial={{ scale: 0.9, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 0.9, opacity: 0 }}
+      className="bg-white w-full max-w-lg rounded-[30px] shadow-2xl overflow-hidden p-8 md:p-10 relative"
+      onClick={e => e.stopPropagation()}
+    >
+      <button onClick={onClose} className="absolute top-6 right-6 p-2 hover:bg-slate-100 rounded-full transition-colors">
+        <X className="text-slate-400 w-5 h-5" />
+      </button>
+
+      <div className="flex flex-col items-center text-center">
+        <div className="w-16 h-16 bg-sprout-accent rounded-2xl flex items-center justify-center mb-6 text-sprout-green">
+          <goal.icon size={32} />
+        </div>
+        <h2 className="text-2xl font-bold text-slate-900 mb-6">{goal.title}</h2>
+        <div className="text-slate-600 leading-relaxed font-sans text-sm md:text-base space-y-4">
+          {goal.body.split("\n\n").map((para, i) => (
+            <p key={i}>{para}</p>
+          ))}
+        </div>
+        <button 
+          onClick={onClose}
+          className="mt-10 px-8 py-3 bg-slate-900 text-white rounded-full font-bold text-xs hover:scale-105 transition-all"
+        >
+          확인
+        </button>
+      </div>
+    </motion.div>
+  </motion.div>
+);
+
 const Navbar = ({ onLogoClick }: { onLogoClick: () => void }) => (
   <motion.nav 
     initial={{ y: -100 }}
@@ -286,6 +347,7 @@ const Navbar = ({ onLogoClick }: { onLogoClick: () => void }) => (
     <div className="hidden md:flex items-center gap-8 text-[11px] font-bold uppercase tracking-widest text-slate-500">
       <a href="#about" className="hover:text-sprout-green transition-colors">About</a>
       <a href="#work" className="hover:text-sprout-green transition-colors">Work</a>
+      <a href="#goal" className="hover:text-sprout-green transition-colors">Goal</a>
     </div>
     <div className="w-[80px] hidden md:block" /> 
   </motion.nav>
@@ -293,6 +355,7 @@ const Navbar = ({ onLogoClick }: { onLogoClick: () => void }) => (
 
 export default function App() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [selectedGoal, setSelectedGoal] = useState<typeof GOAL_DETAILS[keyof typeof GOAL_DETAILS] | null>(null);
   const [isExplored, setIsExplored] = useState(false);
   const [isBlooming, setIsBlooming] = useState(false);
 
@@ -476,11 +539,50 @@ export default function App() {
                   </div>
                 </section>
 
+                {/* Goal Section (Moved to end) */}
+                <motion.section 
+                  id="goal"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="bg-white rounded-[40px] p-8 md:p-12 shadow-sm scroll-mt-28"
+                >
+                  <SectionTitle subtitle="Future Vision">Goal</SectionTitle>
+                  <div className="space-y-10">
+                    <div className="max-w-2xl">
+                      <h3 className="text-xl md:text-2xl font-serif italic text-sprout-green leading-tight mb-6">
+                        "흘려보내지 않는 감정으로, 남겨지는 이야기로"
+                      </h3>
+                      <div className="text-[15px] text-slate-600 leading-relaxed font-sans">
+                        <p>사람의 감정과 시간을 온전히 담아내는 창작자가 되고자 합니다.<br />빠르게 소비되기보다 천천히 남아 오래 기억되는 이야기를 만듭니다.</p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
+                      {(Object.keys(GOAL_DETAILS) as Array<keyof typeof GOAL_DETAILS>).map((key) => {
+                        const item = GOAL_DETAILS[key];
+                        return (
+                          <motion.div 
+                            key={key} 
+                            onClick={() => setSelectedGoal(item)}
+                            whileHover={{ scale: 1.02, backgroundColor: "rgba(248, 250, 252, 1)" }}
+                            whileTap={{ scale: 0.98 }}
+                            className="bg-slate-50 border border-slate-100 rounded-2xl p-6 flex flex-col items-center gap-3 cursor-pointer group hover:border-sprout-accent transition-all"
+                          >
+                            <item.icon className="text-sprout-green w-5 h-5 group-hover:scale-110 transition-transform" />
+                            <span className="text-[13px] font-bold text-slate-700 tracking-tight">{item.title}</span>
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </motion.section>
+
                 <footer className="pt-12 pb-8 text-center text-slate-400 text-[10px] uppercase tracking-[0.3em]">
                   <p className="font-serif italic text-slate-500 normal-case tracking-normal mb-4">
                     "작은 새싹이 커다란 나무가 되듯, 제 이야기도 끊임없이 성장하고 있습니다."
                   </p>
-                  &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.5.2)
+                  &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.5.9)
                 </footer>
               </div>
             </div>
@@ -490,6 +592,12 @@ export default function App() {
                 <ProjectModal 
                   project={selectedProject} 
                   onClose={() => setSelectedProject(null)} 
+                />
+              )}
+              {selectedGoal && (
+                <GoalModal 
+                  goal={selectedGoal} 
+                  onClose={() => setSelectedGoal(null)} 
                 />
               )}
             </AnimatePresence>
