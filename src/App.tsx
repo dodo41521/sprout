@@ -59,9 +59,31 @@ const Card = ({ title, description, badge, icon: Icon }: { title: string; descri
   </motion.div>
 );
 
+const Navbar = () => (
+  <motion.nav 
+    initial={{ y: -100 }}
+    animate={{ y: 0 }}
+    className="fixed top-0 left-0 w-full z-50 px-6 py-4 flex justify-between items-center glass border-none shadow-sm"
+  >
+    <div className="flex items-center gap-2">
+      <div className="w-6 h-6 bg-sprout-green rounded-tl-full rounded-br-full" />
+      <span className="font-serif italic text-sprout-green font-bold tracking-tight">sprout.</span>
+    </div>
+    <div className="hidden md:flex items-center gap-8 text-[11px] font-bold uppercase tracking-widest text-slate-500">
+      <a href="#about" className="hover:text-sprout-green transition-colors">About</a>
+      <a href="#work" className="hover:text-sprout-green transition-colors">Work</a>
+      <a href="#contact" className="hover:text-sprout-green transition-colors">Contact</a>
+    </div>
+    <button className="bg-sprout-green text-white text-[10px] uppercase tracking-widest px-4 py-2 rounded-full font-bold hover:bg-slate-800 transition-colors">
+      Let's Talk
+    </button>
+  </motion.nav>
+);
+
 export default function App() {
   return (
-    <div className="p-4 md:p-8 selection:bg-sprout-green selection:text-white">
+    <div className="pt-24 p-4 md:p-8 selection:bg-sprout-green selection:text-white">
+      <Navbar />
       <div className="max-w-7xl mx-auto lg:grid lg:grid-cols-[350px_1fr] gap-8 items-start">
         
         {/* Left Sidebar: Hero & Contact */}
@@ -86,6 +108,7 @@ export default function App() {
 
           {/* Contact Card (Connection) */}
           <motion.div 
+            id="contact"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
@@ -114,6 +137,7 @@ export default function App() {
           
           {/* About Section */}
           <motion.section 
+            id="about"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
@@ -163,7 +187,7 @@ export default function App() {
           </motion.section>
 
           {/* Work Section */}
-          <section className="space-y-6">
+          <section id="work" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card 
                 badge="Film / Thriller"
