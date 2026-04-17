@@ -24,9 +24,10 @@ import {
 const getAssetUrl = (url: string) => {
   if (!url || url.startsWith('http')) return url;
   
-  // Strip leading slash to make it strictly relative to index.html
-  // and compatible with base: './' in vite config
-  return url.startsWith('/') ? url.slice(1) : url;
+  // For Vite with base: './', relative paths are safest.
+  // We ensure no leading slash to keep it relative to index.html location.
+  const cleanUrl = url.startsWith('/') ? url.slice(1) : url;
+  return cleanUrl;
 };
 
 interface Project {
@@ -181,11 +182,15 @@ const ImageSlider = ({ images }: { images: string[] }) => {
         <motion.img
           key={currentIndex}
           src={getAssetUrl(images[currentIndex])}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          className="max-w-full max-h-[70vh] w-auto h-auto object-contain block"
-          referrerPolicy="no-referrer"
+          alt={`Project Image ${currentIndex + 1}`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="max-w-full max-h-[70vh] w-auto h-auto object-contain block relative z-10 shadow-lg bg-white"
+          onError={(e) => {
+            console.error("Image load failed:", images[currentIndex]);
+            (e.target as HTMLImageElement).src = "https://picsum.photos/seed/error/800/600?text=Image+Load+Failed";
+          }}
         />
       </AnimatePresence>
       
@@ -435,7 +440,7 @@ export default function App() {
             <p className="font-serif italic text-slate-500 normal-case tracking-normal mb-4">
               "작은 새싹이 커다란 나무가 되듯, 제 이야기도 끊임없이 성장하고 있습니다."
             </p>
-            &copy; 2026 Kim Yoon-jin. All Rights Reserved.
+            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.0.4)
           </footer>
         </div>
       </div>
