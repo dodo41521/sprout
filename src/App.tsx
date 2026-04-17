@@ -24,10 +24,15 @@ import {
 const getAssetUrl = (url: string) => {
   if (!url || url.startsWith('http')) return url;
   
-  // For Vite with base: './', relative paths are safest.
-  // We ensure no leading slash to keep it relative to index.html location.
-  const cleanUrl = url.startsWith('/') ? url.slice(1) : url;
-  return cleanUrl;
+  // Use Vite's BASE_URL and ensure the path is correctly combined
+  // This handles sub-paths on GitHub Pages correctly
+  const base = import.meta.env.BASE_URL;
+  const path = url.startsWith('/') ? url.slice(1) : url;
+  
+  // Combine base and path, ensuring we don't end up with double slashes
+  // unless base is './'
+  if (base === './') return path;
+  return `${base}${path}`.replace(/\/+/g, '/');
 };
 
 interface Project {
@@ -172,27 +177,48 @@ const Card = ({ project, onClick }: { project: Project; onClick: () => void }) =
 
 const ImageSlider = ({ images }: { images: string[] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [errorPath, setErrorPath] = useState<string | null>(null);
 
-  const next = () => setCurrentIndex((prev) => (prev + 1) % images.length);
-  const prev = () => setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+  const next = () => {
+    setCurrentIndex((prev) => (prev + 1) % images.length);
+    setErrorPath(null);
+  };
+  const prev = () => {
+    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+    setErrorPath(null);
+  };
+
+  const currentPath = getAssetUrl(images[currentIndex]);
 
   return (
     <div className="relative w-full min-h-[300px] md:min-h-[500px] rounded-3xl overflow-hidden bg-slate-50 flex items-center justify-center group p-4 md:p-8">
-      <AnimatePresence mode="wait">
-        <motion.img
-          key={currentIndex}
-          src={getAssetUrl(images[currentIndex])}
-          alt={`Project Image ${currentIndex + 1}`}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="max-w-full max-h-[70vh] w-auto h-auto object-contain block relative z-10 shadow-lg bg-white"
-          onError={(e) => {
-            console.error("Image load failed:", images[currentIndex]);
-            (e.target as HTMLImageElement).src = "https://picsum.photos/seed/error/800/600?text=Image+Load+Failed";
-          }}
-        />
-      </AnimatePresence>
+      {errorPath ? (
+        <div className="flex flex-col items-center justify-center text-center p-6 space-y-4">
+          <div className="p-4 bg-red-50 rounded-2xl border border-red-100">
+            <p className="text-red-500 font-bold text-sm mb-2">이미지 로드 실패</p>
+            <code className="text-[10px] break-all text-slate-500 bg-white p-2 block rounded border border-slate-200">
+              {errorPath}
+            </code>
+          </div>
+          <p className="text-[11px] text-slate-400">파일이 public 폴더에 있는지, 이름이 정확한지 확인해 주세요.</p>
+        </div>
+      ) : (
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={currentIndex}
+            src={currentPath}
+            alt={`Project Image ${currentIndex + 1}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="max-w-full max-h-[70vh] w-auto h-auto object-contain block relative z-10 shadow-lg bg-white"
+            onError={() => {
+              console.error("Image load failed:", currentPath);
+              setErrorPath(currentPath);
+            }}
+          />
+        </AnimatePresence>
+      )}
       
       {images.length > 1 && (
         <>
@@ -440,7 +466,7 @@ export default function App() {
             <p className="font-serif italic text-slate-500 normal-case tracking-normal mb-4">
               "작은 새싹이 커다란 나무가 되듯, 제 이야기도 끊임없이 성장하고 있습니다."
             </p>
-            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.0.4)
+            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.0.5)
           </footer>
         </div>
       </div>
