@@ -24,10 +24,8 @@ import {
 const getAssetUrl = (url: string) => {
   if (!url || url.startsWith('http')) return url;
   const path = url.startsWith('/') ? url.slice(1) : url;
-  
-  // Use Vite's built-in BASE_URL for standard asset resolution
-  const baseUrl = import.meta.env.BASE_URL || '/';
-  return `${baseUrl}${path}`;
+  // GitHub Pages fixed path strategy: /sprout/filename.jpg
+  return `/sprout/${path}`;
 };
 
 const SmartImage = ({ src, alt, className, onError }: { src: string, alt: string, className?: string, onError: (path: string) => void }) => {
@@ -44,20 +42,20 @@ const SmartImage = ({ src, alt, className, onError }: { src: string, alt: string
     const filename = src.startsWith('/') ? src.slice(1) : src;
     const cacheBuster = `?v=${retryCount + 1}`;
     
-    // Attempt 1: Relative to current location
+    // Attempt 1: Direct absolute URL (bypass all relative issues)
     if (retryCount === 0) {
       setRetryCount(1);
-      setCurrentSrc(`./${filename}${cacheBuster}`);
+      setCurrentSrc(`https://dodo41521.github.io/sprout/${filename}${cacheBuster}`);
     } 
-    // Attempt 2: Explicit repository path
+    // Attempt 2: Simple relative
     else if (retryCount === 1) {
       setRetryCount(2);
-      setCurrentSrc(`/sprout/${filename}${cacheBuster}`);
+      setCurrentSrc(`./${filename}${cacheBuster}`);
     } 
-    // Attempt 3: Direct URL to GitHub Pages
+    // Attempt 3: Public prefix retry
     else if (retryCount === 2) {
       setRetryCount(3);
-      setCurrentSrc(`https://dodo41521.github.io/sprout/${filename}${cacheBuster}`);
+      setCurrentSrc(`./public/${filename}${cacheBuster}`);
     }
     else {
       onError(currentSrc);
@@ -238,7 +236,7 @@ const ImageSlider = ({ images }: { images: string[] }) => {
       {errorPath ? (
         <div className="flex flex-col items-center justify-center text-center p-6 space-y-4">
           <div className="p-4 bg-red-50 rounded-2xl border border-red-100">
-            <p className="text-red-500 font-bold text-sm mb-2">이미지 로드 실패 (v1.2.3)</p>
+            <p className="text-red-500 font-bold text-sm mb-2">이미지 로드 실패 (v1.3.0)</p>
             <div className="space-y-1 mb-2">
               <p className="text-[10px] text-slate-400 font-bold">찾으려는 파일명:</p>
               <code className="text-[11px] font-bold text-slate-700 bg-white px-2 py-1 block rounded border border-slate-200">
@@ -523,7 +521,7 @@ export default function App() {
             <p className="font-serif italic text-slate-500 normal-case tracking-normal mb-4">
               "작은 새싹이 커다란 나무가 되듯, 제 이야기도 끊임없이 성장하고 있습니다."
             </p>
-            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.2.3)
+            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.3.0)
           </footer>
         </div>
       </div>
