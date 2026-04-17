@@ -30,14 +30,19 @@ const getAssetUrl = (url: string) => {
 
 const SmartImage = ({ src, alt, className, onError }: { src: string, alt: string, className?: string, onError: (path: string) => void }) => {
   const [retryCount, setRetryCount] = useState(0);
-  const initialPath = getAssetUrl(src);
-  const [currentSrc, setCurrentSrc] = useState(initialPath);
+  const [currentSrc, setCurrentSrc] = useState(getAssetUrl(src));
+
+  // Reset state when the source image changes (e.g., clicking next in slider)
+  React.useEffect(() => {
+    setRetryCount(0);
+    setCurrentSrc(getAssetUrl(src));
+  }, [src]);
 
   const handleLocalError = () => {
     const filename = src.startsWith('/') ? src.slice(1) : src;
     const cacheBuster = `?v=${retryCount + 1}`;
     
-    // Ensure every retry path is uniquely different to trigger browser re-fetch
+    // Ensure every retry path is uniquely different
     if (retryCount === 0) {
       setRetryCount(1);
       setCurrentSrc(`./${filename}${cacheBuster}`);
@@ -49,10 +54,6 @@ const SmartImage = ({ src, alt, className, onError }: { src: string, alt: string
     else if (retryCount === 2) {
       setRetryCount(3);
       setCurrentSrc(`https://dodo41521.github.io/sprout/${filename}${cacheBuster}`);
-    }
-    else if (retryCount === 3) {
-      setRetryCount(4);
-      setCurrentSrc(`./public/${filename}${cacheBuster}`);
     }
     else {
       onError(currentSrc);
@@ -67,7 +68,7 @@ const SmartImage = ({ src, alt, className, onError }: { src: string, alt: string
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className={`${className} bg-slate-100`}
+      className={`${className} bg-slate-100 transition-opacity duration-300`}
       onError={handleLocalError}
     />
   );
@@ -253,6 +254,7 @@ const ImageSlider = ({ images }: { images: string[] }) => {
       ) : (
         <AnimatePresence mode="wait">
           <SmartImage
+            key={images[currentIndex]}
             src={images[currentIndex]}
             alt={`Project Image ${currentIndex + 1}`}
             className="max-w-full max-h-[70vh] w-auto h-auto object-contain block relative z-10 shadow-lg bg-white"
@@ -510,7 +512,7 @@ export default function App() {
             <p className="font-serif italic text-slate-500 normal-case tracking-normal mb-4">
               "작은 새싹이 커다란 나무가 되듯, 제 이야기도 끊임없이 성장하고 있습니다."
             </p>
-            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.1.2)
+            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.2.0)
           </footer>
         </div>
       </div>
