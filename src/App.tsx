@@ -35,24 +35,27 @@ const SmartImage = ({ src, alt, className, onError }: { src: string, alt: string
   const handleLocalError = () => {
     const filename = src.startsWith('/') ? src.slice(1) : src;
     
-    // Unique retry patterns to force re-render and path discovery
+    // Attempt 1: Just the filename (Vite build default)
     if (retryCount === 0) {
-      // Attempt 1: Relative to current directory
       setRetryCount(1);
-      setCurrentSrc(`./${filename}`);
-    } else if (retryCount === 1) {
-      // Attempt 2: Direct public folder access (just in case)
+      setCurrentSrc(`${filename}`);
+    } 
+    // Attempt 2: Repository sub-path (Standard for GH Pages)
+    else if (retryCount === 1) {
       setRetryCount(2);
-      setCurrentSrc(`./public/${filename}`);
-    } else if (retryCount === 2) {
-      // Attempt 3: Strict repository path for dodo41521.github.io/sprout/
-      setRetryCount(3);
       setCurrentSrc(`/sprout/${filename}`);
-    } else if (retryCount === 3) {
-      // Attempt 4: Clean filename from root
+    } 
+    // Attempt 3: Public folder path (Direct source access)
+    else if (retryCount === 2) {
+      setRetryCount(3);
+      setCurrentSrc(`./public/${filename}`);
+    }
+    // Attempt 4: Absolute URL based on GitHub Pages convention
+    else if (retryCount === 3) {
       setRetryCount(4);
-      setCurrentSrc(`/${filename}`);
-    } else {
+      setCurrentSrc(`https://dodo41521.github.io/sprout/${filename}`);
+    }
+    else {
       onError(currentSrc);
     }
   };
@@ -498,7 +501,7 @@ export default function App() {
             <p className="font-serif italic text-slate-500 normal-case tracking-normal mb-4">
               "작은 새싹이 커다란 나무가 되듯, 제 이야기도 끊임없이 성장하고 있습니다."
             </p>
-            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.1.0)
+            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.1.1)
           </footer>
         </div>
       </div>
