@@ -24,18 +24,36 @@ import {
 const getAssetUrl = (url: string) => {
   if (!url || url.startsWith('http')) return url;
   const path = url.startsWith('/') ? url.slice(1) : url;
+  // Use simple relative path as base
   return `./${path}`;
 };
 
 const SmartImage = ({ src, alt, className, onError }: { src: string, alt: string, className?: string, onError: (path: string) => void }) => {
-  const [triedPublic, setTriedPublic] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
   const [currentSrc, setCurrentSrc] = useState(getAssetUrl(src));
 
   const handleLocalError = () => {
-    if (!triedPublic) {
-      setTriedPublic(true);
-      const fallback = `./public/${src.startsWith('/') ? src.slice(1) : src}`;
-      setCurrentSrc(fallback);
+    const filename = src.startsWith('/') ? src.slice(1) : src;
+    const base = window.location.origin + window.location.pathname;
+    
+    // Try different path patterns common to GitHub Pages
+    if (retryCount === 0) {
+      // Pattern 1: relative to current directory
+      setRetryCount(1);
+      setCurrentSrc(`./${filename}`);
+    } else if (retryCount === 1) {
+      // Pattern 2: absolute path from root
+      setRetryCount(2);
+      setCurrentSrc(`/${filename}`);
+    } else if (retryCount === 2) {
+      // Pattern 3: relative from origin (most robust for some GH setups)
+      setRetryCount(3);
+      const absoluteUrl = new URL(filename, base).href;
+      setCurrentSrc(absoluteUrl);
+    } else if (retryCount === 3) {
+      // Pattern 4: public prefix
+      setRetryCount(4);
+      setCurrentSrc(`./public/${filename}`);
     } else {
       onError(currentSrc);
     }
@@ -482,7 +500,7 @@ export default function App() {
             <p className="font-serif italic text-slate-500 normal-case tracking-normal mb-4">
               "작은 새싹이 커다란 나무가 되듯, 제 이야기도 끊임없이 성장하고 있습니다."
             </p>
-            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.0.8 - Final)
+            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.0.9)
           </footer>
         </div>
       </div>
