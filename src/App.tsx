@@ -30,30 +30,29 @@ const getAssetUrl = (url: string) => {
 
 const SmartImage = ({ src, alt, className, onError }: { src: string, alt: string, className?: string, onError: (path: string) => void }) => {
   const [retryCount, setRetryCount] = useState(0);
-  const [currentSrc, setCurrentSrc] = useState(getAssetUrl(src));
+  const initialPath = getAssetUrl(src);
+  const [currentSrc, setCurrentSrc] = useState(initialPath);
 
   const handleLocalError = () => {
     const filename = src.startsWith('/') ? src.slice(1) : src;
+    const cacheBuster = `?v=${retryCount + 1}`;
     
-    // Attempt 1: Just the filename (Vite build default)
+    // Ensure every retry path is uniquely different to trigger browser re-fetch
     if (retryCount === 0) {
       setRetryCount(1);
-      setCurrentSrc(`${filename}`);
+      setCurrentSrc(`./${filename}${cacheBuster}`);
     } 
-    // Attempt 2: Repository sub-path (Standard for GH Pages)
     else if (retryCount === 1) {
       setRetryCount(2);
-      setCurrentSrc(`/sprout/${filename}`);
+      setCurrentSrc(`/sprout/${filename}${cacheBuster}`);
     } 
-    // Attempt 3: Public folder path (Direct source access)
     else if (retryCount === 2) {
       setRetryCount(3);
-      setCurrentSrc(`./public/${filename}`);
+      setCurrentSrc(`https://dodo41521.github.io/sprout/${filename}${cacheBuster}`);
     }
-    // Attempt 4: Absolute URL based on GitHub Pages convention
     else if (retryCount === 3) {
       setRetryCount(4);
-      setCurrentSrc(`https://dodo41521.github.io/sprout/${filename}`);
+      setCurrentSrc(`./public/${filename}${cacheBuster}`);
     }
     else {
       onError(currentSrc);
@@ -234,12 +233,22 @@ const ImageSlider = ({ images }: { images: string[] }) => {
       {errorPath ? (
         <div className="flex flex-col items-center justify-center text-center p-6 space-y-4">
           <div className="p-4 bg-red-50 rounded-2xl border border-red-100">
-            <p className="text-red-500 font-bold text-sm mb-2">이미지 로드 실패 (v1.0.8)</p>
+            <p className="text-red-500 font-bold text-sm mb-2">이미지 로드 실패 (v1.1.2)</p>
             <code className="text-[10px] break-all text-slate-500 bg-white p-2 block rounded border border-slate-200">
               {errorPath}
             </code>
           </div>
-          <p className="text-[11px] text-slate-400">사진 파일이 실제로 존재하는지 확인이 필요합니다.</p>
+          <div className="space-y-2">
+            <p className="text-[11px] text-slate-400">사진 파일이 실제로 존재하는지 확인이 필요합니다.</p>
+            <a 
+              href={errorPath} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-block text-[10px] text-sprout-green font-bold underline cursor-pointer"
+            >
+              직접 링크 확인하기
+            </a>
+          </div>
         </div>
       ) : (
         <AnimatePresence mode="wait">
@@ -501,7 +510,7 @@ export default function App() {
             <p className="font-serif italic text-slate-500 normal-case tracking-normal mb-4">
               "작은 새싹이 커다란 나무가 되듯, 제 이야기도 끊임없이 성장하고 있습니다."
             </p>
-            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.1.1)
+            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.1.2)
           </footer>
         </div>
       </div>
