@@ -24,8 +24,9 @@ import {
 const getAssetUrl = (url: string) => {
   if (!url || url.startsWith('http')) return url;
   
-  // Ensure it starts with a leading slash for absolute path within the domain
-  return url.startsWith('/') ? url : `/${url}`;
+  // Strip leading slash to make it strictly relative to index.html
+  // and compatible with base: './' in vite config
+  return url.startsWith('/') ? url.slice(1) : url;
 };
 
 interface Project {
@@ -54,9 +55,9 @@ const PROJECTS: Project[] = [
     members: "6명",
     body: `시나리오 및 콘티 작성, 일촬표 작성, 촬영 디렉팅 등 작품 제작의 총괄을 맡았습니다.\n\n1학년으로서 첫 팀 작업이었고, 팀원 대부분이 선배여서 초반에는 역할 분배와 현장 운영에 서툶이 있었습니다. 하지만 촬영 딜레이를 방지하기 위해 디렉팅을 최대한 구체적으로 준비하였고 카메라 리허설이 어려운 장면의 경우, 촬영용 콘티를 추가 제작해 공유했습니다.\n\n그 결과 촬영 현장에서 큰 딜레이 없이 장면을 완성할 수 있었습니다. 이를 토대로 팀원 간의 소통과 감독의 디렉팅이 매우 중요함을 깨달았습니다. 이후에는 팀 운영과 사전 준비를 더욱 체계적으로 설계하는 데 기준을 두게 되었습니다.`,
     images: [
-      "/poison-1.jpg",
-      "/poison-2.jpg",
-      "/poison-3.jpg"
+      "poison-1.jpg",
+      "poison-2.jpg",
+      "poison-3.jpg"
     ],
     focusPoints: [
       "작품 제작 전반의 총괄 디렉팅 경험",
@@ -75,10 +76,10 @@ const PROJECTS: Project[] = [
     members: "10명",
     body: `시나리오 및 콘티 작성, 일촬표 작성, 촬영 디렉팅 등 작품 제작의 총괄을 맡았습니다.\n\n제작 1에서 미숙한 점을 보완하기 위해 효율적인 역할 분배와 체계적인 팀 운영을 위해 노력하였고 장비 및 로케이션 협의, 편집에도 더욱 신경을 썼습니다.\n\n이를 통해 보다 완성도 있는 작품을 제작했고, 동아리 상영회 때 '동계 영화 당선작'에 선정되어 현재는 이 작품을 30분 이상의 영화로 추가 제작 중에 있습니다.`,
     images: [
-      "/your-1.jpg",
-      "/your-2.jpg",
-      "/your-3.jpg",
-      "/your-4.jpg"
+      "your-1.jpg",
+      "your-2.jpg",
+      "your-3.jpg",
+      "your-4.jpg"
     ],
     focusPoints: [
       "효율적인 역할 분배 및 체계적인 팀 운영",
@@ -97,9 +98,9 @@ const PROJECTS: Project[] = [
     members: "미리캔버스, VLLO",
     body: `수산 교회 청소년부에서 미디어 교사로 활동하며 청소년부 아카이브용으로 직접 인스타그램 계정을 만들어 온라인 주보, 예배 스케치, 릴스, 수련회 영상 편집 등을 제작 및 총괄하고 있습니다.\n\n현재 트렌드에 맞추어 릴스를 제작하여 최대 조회수 3.3만 회에 도달했고, 계정을 직접 운영함으로써 콘텐츠 기획 능력과 디자인 및 편집 실력이 향상되었습니다.`,
     images: [
-      "/in-1.jpg",
-      "/in-2.jpg",
-      "/in-3.jpg"
+      "in-1.jpg",
+      "in-2.jpg",
+      "in-3.jpg"
     ],
     focusPoints: [
       "인스타그램 아카이브 계정 기획 및 운영",
@@ -117,7 +118,7 @@ const PROJECTS: Project[] = [
     period: "2026.03 ~ 07",
     members: "운영진 전체",
     body: `여러 대학의 영화 동아리들이 하나의 목표를 위해 모여 영화제를 만들어가는 과정에 기획팀원으로 참여하며, 단순한 행사 준비를 넘어 다양한 사람들과의 협업과 소통을 경험하고 있습니다.\n\n각 학교마다 서로 다른 분위기와 제작 방식, 그리고 영화에 대한 관점이 존재하기 때문에 이를 조율하고 하나의 방향성으로 이끌어가는 과정은 쉽지 않지만, 그만큼 의미 있는 배움의 기회가 되고 있습니다.`,
-    images: ["/fhfp-1.png"],
+    images: ["fhfp-1.png"],
     focusPoints: [
       "전국 18개 대학 연합 영화제 기획",
       "다양한 동아리 간의 제작 방식 조율",
