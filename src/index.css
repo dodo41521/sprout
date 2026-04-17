@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Helvetica Neue", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Georgia", "Libre Baskerville", serif;
+
+  --color-sprout-green: #228B22;
+  --color-sprout-yellow: #FAFAD2;
+  --color-sprout-accent: #E9F5DB;
+  --color-sprout-glass: rgba(255, 255, 255, 0.4);
+  --color-sprout-glass-border: rgba(255, 255, 255, 0.6);
+}
+
+@layer base {
+  body {
+    @apply text-slate-800 font-sans antialiased min-h-screen bg-sprout-yellow;
+    background-image: 
+      radial-gradient(circle at 10% 20%, #D8F3DC 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, #B7E4C7 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, #FAFAD2 0%, transparent 60%);
+    background-attachment: fixed;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-sprout-glass backdrop-blur-md border border-sprout-glass-border;
+  }
+}
