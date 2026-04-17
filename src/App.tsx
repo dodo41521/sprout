@@ -7,21 +7,10 @@ import { motion, AnimatePresence } from "motion/react";
 import React, { useState } from 'react';
 import { 
   Leaf, 
-  Film, 
-  Instagram, 
-  Users, 
-  Phone, 
-  Mail, 
-  Calendar, 
   GraduationCap, 
   Award,
-  ChevronDown,
-  X,
-  ChevronLeft,
-  ChevronRight
+  X
 } from "lucide-react";
-
-
 
 interface Project {
   id: string;
@@ -36,7 +25,6 @@ interface Project {
   focusPoints: string[];
 }
 
-// Last sync attempt: 2026-04-17
 const PROJECTS: Project[] = [
   {
     id: "poison",
@@ -164,6 +152,41 @@ const Sparkle = () => {
   );
 };
 
+const LeafFlyBurst = () => {
+  const leaves = Array.from({ length: 20 });
+  return (
+    <div className="fixed inset-0 pointer-events-none z-[250] overflow-hidden">
+      {leaves.map((_, i) => (
+        <motion.div
+          key={i}
+          initial={{ 
+            opacity: 0, 
+            x: "50vw", 
+            y: "50vh",
+            rotate: 0,
+            scale: 0
+          }}
+          animate={{ 
+            opacity: [0, 1, 0],
+            x: ["50vw", (Math.random() * 140 - 20) + "vw"],
+            y: ["50vh", (Math.random() * 140 - 20) + "vh"],
+            rotate: Math.random() * 720,
+            scale: [0, 2, 0]
+          }}
+          transition={{ 
+            duration: 1.5, 
+            delay: Math.random() * 0.3,
+            ease: "easeOut"
+          }}
+          className="absolute text-sprout-green"
+        >
+          <Leaf size={Math.random() * 30 + 20} fill="currentColor" />
+        </motion.div>
+      ))}
+    </div>
+  );
+};
+
 const Card: React.FC<{ project: Project; onClick: () => void }> = ({ project, onClick }) => (
   <motion.div 
     layoutId={`card-${project.id}`}
@@ -180,7 +203,6 @@ const Card: React.FC<{ project: Project; onClick: () => void }> = ({ project, on
     </div>
   </motion.div>
 );
-
 
 const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => void }) => (
   <motion.div
@@ -215,31 +237,6 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
           </div>
 
           <div className="space-y-12">
-            <div>
-              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6 border-b border-slate-100 pb-2">작품 개요</h4>
-              <div className="grid grid-cols-2 gap-8">
-                <div>
-                  <p className="text-[10px] font-bold text-sprout-green uppercase tracking-widest mb-1 font-sans">제작 기간</p>
-                  <p className="text-slate-800 font-medium">{project.period}</p>
-                </div>
-                <div>
-                  <p className="text-[10px] font-bold text-sprout-green uppercase tracking-widest mb-1 font-sans">
-                    {project.id === "insta" ? "제작 프로그램" : "제작 인원"}
-                  </p>
-                  <p className="text-slate-800 font-medium">{project.members}</p>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6 border-b border-slate-100 pb-2">상세 이야기</h4>
-              <div className="text-slate-600 leading-relaxed text-[15px] space-y-6">
-                {project.body.split("\n\n").map((para, i) => (
-                  <p key={i}>{para}</p>
-                ))}
-              </div>
-            </div>
-
             <div className="bg-slate-50 p-8 rounded-[30px] border border-slate-100">
               <h4 className="text-xs font-bold text-sprout-green uppercase tracking-widest mb-6 font-sans text-center">핵심 포인트</h4>
               <ul className="space-y-4">
@@ -250,6 +247,12 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
                   </li>
                 ))}
               </ul>
+            </div>
+            
+            <div className="text-slate-600 leading-relaxed text-[15px] space-y-6">
+              {project.body.split("\n\n").map((para, i) => (
+                <p key={i}>{para}</p>
+              ))}
             </div>
           </div>
         </div>
@@ -267,172 +270,230 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
   </motion.div>
 );
 
-const Navbar = () => (
+const Navbar = ({ onLogoClick }: { onLogoClick: () => void }) => (
   <motion.nav 
     initial={{ y: -100 }}
     animate={{ y: 0 }}
     className="fixed top-0 left-0 w-full z-50 px-6 py-4 flex justify-between items-center glass border-none shadow-sm"
   >
-    <div className="flex items-center gap-2">
-      <div className="w-6 h-6 bg-sprout-green rounded-tl-full rounded-br-full" />
+    <div 
+      className="flex items-center gap-2 cursor-pointer group"
+      onClick={onLogoClick}
+    >
+      <div className="w-6 h-6 bg-sprout-green rounded-tl-full rounded-br-full group-hover:rotate-12 transition-transform" />
       <span className="font-serif italic text-sprout-green font-bold tracking-tight">sprout.</span>
     </div>
     <div className="hidden md:flex items-center gap-8 text-[11px] font-bold uppercase tracking-widest text-slate-500">
       <a href="#about" className="hover:text-sprout-green transition-colors">About</a>
       <a href="#work" className="hover:text-sprout-green transition-colors">Work</a>
     </div>
-    <button className="bg-sprout-green text-white text-[10px] uppercase tracking-widest px-4 py-2 rounded-full font-bold hover:bg-slate-800 transition-colors">
-      Let's Talk
-    </button>
+    <div className="w-[80px] hidden md:block" /> 
   </motion.nav>
 );
 
 export default function App() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [isExplored, setIsExplored] = useState(false);
+  const [isBlooming, setIsBlooming] = useState(false);
+
+  const handleExplore = () => {
+    setIsBlooming(true);
+    setTimeout(() => {
+      setIsExplored(true);
+      setIsBlooming(false);
+    }, 1200);
+  };
 
   return (
-    <div className="pt-24 p-4 md:p-8 selection:bg-sprout-green selection:text-white">
+    <div className="min-h-screen selection:bg-sprout-green selection:text-white overflow-x-hidden">
       <Sparkle />
-      <Navbar />
-      <div className="max-w-7xl mx-auto lg:grid lg:grid-cols-[350px_1fr] gap-8 items-start">
-        
-        {/* Left Sidebar: Hero & Contact */}
-        <div className="space-y-6 lg:sticky lg:top-8">
-          
-          {/* Hero Card */}
-          <motion.section 
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="glass rounded-[40px] p-10 md:p-14 lg:p-10 flex flex-col justify-center min-h-[400px] lg:min-h-[500px]"
+      
+      <AnimatePresence mode="wait">
+        {!isExplored ? (
+          <motion.div
+            key="landing"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
+            transition={{ duration: 0.8 }}
+            className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-sprout-yellow"
           >
-            <div className="w-10 h-10 bg-sprout-green rounded-tl-full rounded-br-full mb-8" />
-            <h1 className="text-7xl lg:text-8xl font-serif italic text-sprout-green leading-none mb-6 tracking-tighter">
-              sprout
-            </h1>
-            <p className="text-lg text-slate-700 leading-relaxed font-sans">
-              작은 떨림에서 시작된 이야기를,<br />
-              천천히 피워내는 사람.<br />
-              <strong className="text-sprout-green">김윤진입니다.</strong>
-            </p>
-          </motion.section>
-
-          {/* Contact Card (Connection) - Restored */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="glass rounded-[30px] p-8"
-          >
-            <h3 className="text-[11px] font-bold text-sprout-green uppercase tracking-[0.2em] mb-6">Connection</h3>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center text-[13px]">
-                <span className="opacity-50">Phone</span>
-                <span className="font-medium">010-3338-3543</span>
-              </div>
-              <div className="flex justify-between items-center text-[13px]">
-                <span className="opacity-50">Email</span>
-                <span className="font-medium lowercase">dodo41521@gmail.com</span>
-              </div>
-              <div className="flex justify-between items-center text-[13px]">
-                <span className="opacity-50">Birth</span>
-                <span className="font-medium">2006.09.08</span>
-              </div>
-            </div>
+            {isBlooming && <LeafFlyBurst />}
+            <motion.div 
+              onClick={handleExplore}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="cursor-pointer flex flex-col items-center group relative z-10"
+            >
+              <motion.div 
+                animate={isBlooming ? { scale: 1.5, opacity: 0 } : { 
+                  scale: [1, 1.1, 1],
+                  rotate: [0, 5, -5, 0]
+                }}
+                transition={{ 
+                  duration: isBlooming ? 0.4 : 4,
+                  repeat: isBlooming ? 0 : Infinity,
+                  ease: "easeInOut"
+                }}
+                className="w-20 h-20 bg-sprout-green rounded-tl-full rounded-br-full mb-8 shadow-2xl shadow-sprout-green/20" 
+              />
+              <motion.h1 
+                animate={isBlooming ? { opacity: 0, y: -20 } : { opacity: 1 }}
+                className="text-8xl md:text-9xl font-serif italic text-sprout-green leading-none mb-6 tracking-tighter"
+              >
+                sprout
+              </motion.h1>
+              {!isBlooming && (
+                <motion.p 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                  className="text-[12px] font-bold text-sprout-green/40 uppercase tracking-[0.4em] group-hover:text-sprout-green/80 transition-colors"
+                >
+                  Click to Bloom
+                </motion.p>
+              )}
+            </motion.div>
           </motion.div>
-        </div>
-
-        {/* Right Content: About & Work */}
-        <div className="mt-8 lg:mt-0 space-y-8">
-          
-          {/* About Section */}
-          <motion.section 
-            id="about"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="bg-white rounded-[40px] p-8 md:p-12 shadow-sm scroll-mt-28"
+        ) : (
+          <motion.div 
+            key="content"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="pt-24 p-4 md:p-8"
           >
-            <SectionTitle subtitle="Growing Soul">About</SectionTitle>
-            
-            <div className="grid md:grid-cols-2 gap-12">
-              <div className="space-y-8">
-                <div>
-                  <h4 className="font-bold text-sm mb-6 flex items-center gap-2">
-                    <GraduationCap size={16} className="text-sprout-green" /> Education
-                  </h4>
+            <Navbar onLogoClick={() => setIsExplored(false)} />
+            <div className="max-w-7xl mx-auto lg:grid lg:grid-cols-[350px_1fr] gap-8 items-start">
+              
+              <div className="space-y-6 lg:sticky lg:top-8">
+                <motion.section 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="glass rounded-[40px] p-10 md:p-14 lg:p-10 flex flex-col justify-center min-h-[400px] lg:min-h-[500px]"
+                >
+                  <div className="w-10 h-10 bg-sprout-green rounded-tl-full rounded-br-full mb-8" />
+                  <h1 className="text-7xl lg:text-8xl font-serif italic text-sprout-green leading-none mb-6 tracking-tighter">
+                    sprout
+                  </h1>
+                  <p className="text-lg text-slate-700 leading-relaxed font-sans">
+                    작은 떨림에서 시작된 이야기를,<br />
+                    천천히 피워내는 사람.<br />
+                    <strong className="text-sprout-green">김윤진입니다.</strong>
+                  </p>
+                </motion.section>
+
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="glass rounded-[30px] p-8"
+                >
+                  <h3 className="text-[11px] font-bold text-sprout-green uppercase tracking-[0.2em] mb-6">Connection</h3>
                   <div className="space-y-4">
-                    <div className="border-l-2 border-sprout-accent pl-5 py-1">
-                      <p className="text-[11px] font-bold text-sprout-green">2026</p>
-                      <p className="text-[14px] text-slate-800">한성대학교 문학문화콘텐츠학과 전공</p>
+                    <div className="flex justify-between items-center text-[13px]">
+                      <span className="opacity-50">Phone</span>
+                      <span className="font-medium">010-3338-3543</span>
                     </div>
-                    <div className="border-l-2 border-sprout-accent pl-5 py-1">
-                      <p className="text-[11px] font-bold text-sprout-green">2025</p>
-                      <p className="text-[14px] text-slate-800">한성대학교 상상력인재학부 입학</p>
+                    <div className="flex justify-between items-center text-[13px]">
+                      <span className="opacity-50">Email</span>
+                      <span className="font-medium lowercase">dodo41521@gmail.com</span>
                     </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-8">
-                <div>
-                  <h4 className="font-bold text-sm mb-6 flex items-center gap-2">
-                    <Award size={16} className="text-sprout-green" /> Activities
-                  </h4>
-                  <div className="space-y-6">
-                    <div className="border-l-2 border-sprout-accent pl-5 space-y-2">
-                      <p className="text-[11px] font-bold text-sprout-green">2026 ~</p>
-                      <div className="space-y-1">
-                        <p className="text-[14px] text-slate-800">한성대학교 영화 동아리 '영화 다솜' 감독 팀장</p>
-                        <p className="text-[14px] text-slate-800">FHFP 2026 운영위원회 기획팀원</p>
-                      </div>
-                    </div>
-                    <div className="border-l-2 border-sprout-accent pl-5 space-y-2">
-                      <p className="text-[11px] font-bold text-sprout-green">2025 ~</p>
-                      <div className="space-y-1">
-                        <p className="text-[14px] text-slate-800">한성대학교 영화 동아리 '영화 다솜' 활동</p>
-                        <p className="text-[14px] text-slate-800">한국사능력검정시험 2급 취득 (2025.08.09)</p>
-                      </div>
+                    <div className="flex justify-between items-center text-[13px]">
+                      <span className="opacity-50">Birth</span>
+                      <span className="font-medium">2006.09.08</span>
                     </div>
                   </div>
-                </div>
+                </motion.div>
+              </div>
+
+              <div className="mt-8 lg:mt-0 space-y-8">
+                <motion.section 
+                  id="about"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="bg-white rounded-[40px] p-8 md:p-12 shadow-sm scroll-mt-28"
+                >
+                  <SectionTitle subtitle="Growing Soul">About</SectionTitle>
+                  <div className="grid md:grid-cols-2 gap-12">
+                    <div className="space-y-8">
+                      <div>
+                        <h4 className="font-bold text-sm mb-6 flex items-center gap-2">
+                          <GraduationCap size={16} className="text-sprout-green" /> Education
+                        </h4>
+                        <div className="space-y-4">
+                          <div className="border-l-2 border-sprout-accent pl-5 py-1">
+                            <p className="text-[11px] font-bold text-sprout-green">2026</p>
+                            <p className="text-[14px] text-slate-800">한성대학교 문학문화콘텐츠학과 전공</p>
+                          </div>
+                          <div className="border-l-2 border-sprout-accent pl-5 py-1">
+                            <p className="text-[11px] font-bold text-sprout-green">2025</p>
+                            <p className="text-[14px] text-slate-800">한성대학교 상상력인재학부 입학</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-8">
+                      <div>
+                        <h4 className="font-bold text-sm mb-6 flex items-center gap-2">
+                          <Award size={16} className="text-sprout-green" /> Activities
+                        </h4>
+                        <div className="space-y-6">
+                          <div className="border-l-2 border-sprout-accent pl-5 space-y-2">
+                            <p className="text-[11px] font-bold text-sprout-green">2026 ~</p>
+                            <div className="space-y-1">
+                              <p className="text-[14px] text-slate-800">한성대학교 영화 동아리 '영화 다솜' 감독 팀장</p>
+                              <p className="text-[14px] text-slate-800">FHFP 2026 운영위원회 기획팀원</p>
+                            </div>
+                          </div>
+                          <div className="border-l-2 border-sprout-accent pl-5 space-y-2">
+                            <p className="text-[11px] font-bold text-sprout-green">2025 ~</p>
+                            <div className="space-y-1">
+                              <p className="text-[14px] text-slate-800">한성대학교 영화 동아리 '영화 다솜' 활동</p>
+                              <p className="text-[14px] text-slate-800">한국사능력검정시험 2급 취득 (2025.08.09)</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.section>
+
+                <section id="work" className="bg-white rounded-[40px] p-8 md:p-12 shadow-sm scroll-mt-28">
+                  <SectionTitle subtitle="Selected Projects">Work</SectionTitle>
+                  <div className="flex flex-col">
+                    {PROJECTS.map((project, index) => (
+                      <React.Fragment key={project.id}>
+                        <Card 
+                          project={project}
+                          onClick={() => setSelectedProject(project)}
+                        />
+                        {index < PROJECTS.length - 1 && (
+                          <div className="h-[1px] w-full bg-sprout-green/20 my-2" />
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                </section>
+
+                <footer className="pt-12 pb-8 text-center text-slate-400 text-[10px] uppercase tracking-[0.3em]">
+                  <p className="font-serif italic text-slate-500 normal-case tracking-normal mb-4">
+                    "작은 새싹이 커다란 나무가 되듯, 제 이야기도 끊임없이 성장하고 있습니다."
+                  </p>
+                  &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.5.2)
+                </footer>
               </div>
             </div>
-          </motion.section>
 
-          {/* Work Section */}
-          <section id="work" className="bg-white rounded-[40px] p-8 md:p-12 shadow-sm scroll-mt-28">
-            <SectionTitle subtitle="Selected Projects">Work</SectionTitle>
-            <div className="flex flex-col">
-              {PROJECTS.map((project, index) => (
-                <React.Fragment key={project.id}>
-                  <Card 
-                    project={project}
-                    onClick={() => setSelectedProject(project)}
-                  />
-                  {index < PROJECTS.length - 1 && (
-                    <div className="h-[1px] w-full bg-sprout-green/20 my-2" />
-                  )}
-                </React.Fragment>
-              ))}
-            </div>
-          </section>
-
-          {/* Footer Footer */}
-          <footer className="pt-12 pb-8 text-center text-slate-400 text-[10px] uppercase tracking-[0.3em]">
-            <p className="font-serif italic text-slate-500 normal-case tracking-normal mb-4">
-              "작은 새싹이 커다란 나무가 되듯, 제 이야기도 끊임없이 성장하고 있습니다."
-            </p>
-            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.4.6)
-          </footer>
-        </div>
-      </div>
-
-      <AnimatePresence>
-        {selectedProject && (
-          <ProjectModal 
-            project={selectedProject} 
-            onClose={() => setSelectedProject(null)} 
-          />
+            <AnimatePresence>
+              {selectedProject && (
+                <ProjectModal 
+                  project={selectedProject} 
+                  onClose={() => setSelectedProject(null)} 
+                />
+              )}
+            </AnimatePresence>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
