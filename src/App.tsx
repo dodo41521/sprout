@@ -21,6 +21,13 @@ import {
   ChevronRight
 } from "lucide-react";
 
+const getAssetUrl = (url: string) => {
+  if (!url || url.startsWith('http')) return url;
+  // For GitHub Pages and other sub-path deployments, 
+  // keeping paths relative to the root of the app is safest.
+  return url.startsWith('/') ? url.slice(1) : url;
+};
+
 interface Project {
   id: string;
   badge: string;
@@ -171,7 +178,7 @@ const ImageSlider = ({ images }: { images: string[] }) => {
       <AnimatePresence mode="wait">
         <motion.img
           key={currentIndex}
-          src={images[currentIndex]}
+          src={getAssetUrl(images[currentIndex])}
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
