@@ -32,6 +32,7 @@ interface Project {
   members: string;
   body: string;
   images: string[];
+  focusPoints: string[];
 }
 
 const PROJECTS: Project[] = [
@@ -41,7 +42,7 @@ const PROJECTS: Project[] = [
     title: "단편영화 <독>",
     description: "심리 스릴러 장르의 감독 및 제작 총괄. 긴장감 넘치는 연출과 미장센을 통해 인간의 내면을 탐구했습니다.",
     detailTitle: "5분 단편 영화 <독> 제작",
-    subtitle: "2025년 1학기 한성대학교 영화제작 동아리 '영화 다솜' 에서 감독을 맡아 심리 스릴러 장르의 <독> 을 제작을 하였습니다.",
+    subtitle: "2025년 1학기 한성대학교 영화제작 동아리 '영화 다솜' 에서 감독을 맡아 심리 스릴러 장르의\n<독> 을 제작을 하였습니다.",
     period: "2025년 5월 1일 ~ 6월 30일",
     members: "6명",
     body: `시나리오 및 콘티 작성, 일촬표 작성, 촬영 디렉팅 등 작품 제작의 총괄을 맡았습니다.\n\n1학년으로서 첫 팀 작업이었고, 팀원 대부분이 선배여서 초반에는 역할 분배와 현장 운영에 서툶이 있었습니다. 하지만 촬영 딜레이를 방지하기 위해 디렉팅을 최대한 구체적으로 준비하였고 카메라 리허설이 어려운 장면의 경우, 촬영용 콘티를 추가 제작해 공유했습니다.\n\n그 결과 촬영 현장에서 큰 딜레이 없이 장면을 완성할 수 있었습니다. 이를 토대로 팀원 간의 소통과 감독의 디렉팅이 매우 중요함을 깨달았습니다. 이후에는 팀 운영과 사전 준비를 더욱 체계적으로 설계하는 데 기준을 두게 되었습니다.`,
@@ -49,6 +50,11 @@ const PROJECTS: Project[] = [
       "poison-1.jpg",
       "poison-2.jpg",
       "poison-3.jpg"
+    ],
+    focusPoints: [
+      "작품 제작 전반의 총괄 디렉팅 경험",
+      "구체적인 디렉팅 준비로 촬영 지연 방지",
+      "팀 운영 및 체계적인 사전 준비 역량 강화"
     ]
   },
   {
@@ -56,36 +62,60 @@ const PROJECTS: Project[] = [
     badge: "Film / Buddy",
     title: "단편영화 <너에게 닿기를>",
     description: "청춘의 우정을 다룬 버디무비. 2026 동계 영화제 당선작으로 따뜻한 감성과 서사를 담았습니다.",
-    detailTitle: "단편영화 <너에게 닿기를> 제작",
-    subtitle: "동계 영화제 당선작. 청춘의 방황과 우정을 따뜻한 시선으로 담아낸 버디무비입니다.",
-    period: "2025년 12월 ~ 2026년 2월",
-    members: "5명",
-    body: "버디무비 장르의 특성을 살려 인물 간의 관계 변화에 집중하여 연출했습니다.",
-    images: ["https://picsum.photos/seed/reach/800/500"]
+    detailTitle: "20분 단편 영화 <너에게 닿기를> 제작",
+    subtitle: "2025년 2학기 한성대학교 영화제작 동아리 '영화 다솜' 에서 감독을 맡아 버디무비 장르\n<너에게 닿기를> 을 제작을 하였습니다.",
+    period: "2025년 9월 14일 ~ 12월 26일",
+    members: "10명",
+    body: `시나리오 및 콘티 작성, 일촬표 작성, 촬영 디렉팅 등 작품 제작의 총괄을 맡았습니다.\n\n제작 1에서 미숙한 점을 보완하기 위해 효율적인 역할 분배와 체계적인 팀 운영을 위해 노력하였고 장비 및 로케이션 협의, 편집에도 더욱 신경을 썼습니다.\n\n이를 통해 보다 완성도 있는 작품을 제작했고, 동아리 상영회 때 '동계 영화 당선작'에 선정되어 현재는 이 작품을 30분 이상의 영화로 추가 제작 중에 있습니다.`,
+    images: [
+      "your-1.jpg",
+      "your-2.jpg",
+      "your-3.jpg",
+      "your-4.jpg"
+    ],
+    focusPoints: [
+      "효율적인 역할 분배 및 체계적인 팀 운영",
+      "로케이션 협의 및 편집 등 작품 완성도 보완",
+      "동계 영화 당선 및 장편화 제작 진행"
+    ]
   },
   {
     id: "insta",
     badge: "Social Media",
     title: "교회 인스타그램 운영",
     description: "콘텐츠 기획 및 릴스 제작을 담당하여 누적 조회수 3.3만을 기록하는 등 커뮤니티 활성화에 기여했습니다.",
-    detailTitle: "교회 인스타그램 콘텐츠 마케팅",
-    subtitle: "뉴미디어 콘텐츠 기획 및 제작 총괄",
-    period: "2025년 상반기",
-    members: "개인",
-    body: "릴스 콘텐츠 기획 및 제작을 통해 유의미한 수치를 달성했습니다.",
-    images: ["https://picsum.photos/seed/insta/800/500"]
+    detailTitle: "수산교회 청소년부 인스타그램 운영",
+    subtitle: "2025년부터 현재까지 수산교회 청소년부 인스타그램 계정을 운영하고 있습니다.",
+    period: "2025년 1월 5일 ~ 현재",
+    members: "미리캔버스, VLLO",
+    body: `수산 교회 청소년부에서 미디어 교사로 활동하며 청소년부 아카이브용으로 직접 인스타그램 계정을 만들어 온라인 주보, 예배 스케치, 릴스, 수련회 영상 편집 등을 제작 및 총괄하고 있습니다.\n\n현재 트렌드에 맞추어 릴스를 제작하여 최대 조회수 3.3만 회에 도달했고, 계정을 직접 운영함으로써 콘텐츠 기획 능력과 디자인 및 편집 실력이 향상되었습니다.`,
+    images: [
+      "in-1.jpg",
+      "in-2.jpg",
+      "in-3.jpg"
+    ],
+    focusPoints: [
+      "인스타그램 아카이브 계정 기획 및 운영",
+      "릴스 제작을 통한 조회수 3.3만 회 달성",
+      "콘텐츠 기획 및 디자인/편집 실력 향상"
+    ]
   },
   {
     id: "fhfp",
     badge: "Festival Planning",
     title: "FHFP 영화제 기획",
     description: "전국 대학 연합 영화제의 전반적인 기획 단계에 참여하여 문화 예술의 장을 마련하는 경험을 쌓았습니다.",
-    detailTitle: "제N회 FHFP 영화제 기획/운영",
-    subtitle: "전국 대학 연합 영화제 운영위원회 기획팀원",
-    period: "2026년 상반기 예정",
+    detailTitle: "FHFP 2026 운영위원회 기획팀원",
+    subtitle: "전국 18개 이상의 대학의 영화 동아리들과 연합하여 영화제를 만드는 활동에\n기획팀원으로 활동하고 있습니다.",
+    period: "2026.03 ~ 07",
     members: "운영진 전체",
-    body: "대규모 문화 축제의 전반적인 기획과 협찬 프로세스를 담당했습니다.",
-    images: ["https://picsum.photos/seed/fhfp/800/500"]
+    body: `여러 대학의 영화 동아리들이 하나의 목표를 위해 모여 영화제를 만들어가는 과정에 기획팀원으로 참여하며, 단순한 행사 준비를 넘어 다양한 사람들과의 협업과 소통을 경험하고 있습니다.\n\n각 학교마다 서로 다른 분위기와 제작 방식, 그리고 영화에 대한 관점이 존재하기 때문에 이를 조율하고 하나의 방향성으로 이끌어가는 과정은 쉽지 않지만, 그만큼 의미 있는 배움의 기회가 되고 있습니다.`,
+    images: ["fhfp-1.png"],
+    focusPoints: [
+      "전국 18개 대학 연합 영화제 기획",
+      "다양한 동아리 간의 제작 방식 조율",
+      "협업과 소통 중심의 운영 경험"
+    ]
   }
 ];
 
@@ -137,7 +167,7 @@ const ImageSlider = ({ images }: { images: string[] }) => {
   const prev = () => setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
 
   return (
-    <div className="relative aspect-video rounded-3xl overflow-hidden bg-slate-100 group">
+    <div className="relative w-full min-h-[300px] md:min-h-[500px] rounded-3xl overflow-hidden bg-slate-50 flex items-center justify-center group p-4 md:p-8">
       <AnimatePresence mode="wait">
         <motion.img
           key={currentIndex}
@@ -145,7 +175,7 @@ const ImageSlider = ({ images }: { images: string[] }) => {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
-          className="w-full h-full object-cover"
+          className="max-w-full max-h-[70vh] w-auto h-auto object-contain block"
           referrerPolicy="no-referrer"
         />
       </AnimatePresence>
@@ -184,13 +214,17 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
     >
       <div className="flex-1 overflow-y-auto custom-scrollbar">
         <div className="p-6 md:p-10">
-          <div className="flex justify-between items-start mb-8">
+          <div className="flex justify-between items-start mb-6">
             <div>
               <span className="inline-block px-3 py-1 bg-sprout-accent text-slate-700 text-[10px] font-bold rounded-[10px] mb-4 uppercase tracking-wider">
                 {project.badge}
               </span>
-              <h2 className="text-4xl md:text-5xl font-sans font-bold text-slate-900 mb-4 tracking-tight">{project.detailTitle}</h2>
-              <p className="text-xl text-sprout-green font-sans font-bold italic">{project.subtitle}</p>
+              <h2 className="text-[32px] md:text-[44px] font-sans font-bold text-slate-900 mb-1 tracking-tight leading-tight">{project.detailTitle}</h2>
+              <div className="text-lg text-sprout-green font-sans font-bold leading-relaxed">
+                {project.subtitle.split("\n").map((line, i) => (
+                  <p key={i}>{line}</p>
+                ))}
+              </div>
             </div>
             <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
               <X className="text-slate-400" />
@@ -208,7 +242,9 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
                   <p className="text-slate-800 font-medium">{project.period}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-sprout-green uppercase tracking-widest mb-1">제작 인원</p>
+                  <p className="text-[10px] font-bold text-sprout-green uppercase tracking-widest mb-1">
+                    {project.id === "insta" ? "제작 프로그램" : "제작 인원"}
+                  </p>
                   <p className="text-slate-800 font-medium">{project.members}</p>
                 </div>
               </div>
@@ -224,18 +260,12 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
             <div className="bg-sprout-light/20 p-8 rounded-3xl h-fit">
               <p className="text-sm font-bold text-sprout-green mb-4">Focus Points</p>
               <ul className="text-xs space-y-4 text-slate-600 leading-relaxed">
-                <li className="flex gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-sprout-green mt-1.5 shrink-0" />
-                  <span>현장 운영 및 디렉팅 총괄</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-sprout-green mt-1.5 shrink-0" />
-                  <span>사전 콘티 정교화를 통한 딜레이 방지</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-sprout-green mt-1.5 shrink-0" />
-                  <span>다양한 연령층 팀원과의 소통 경험</span>
-                </li>
+                {project.focusPoints.map((point, index) => (
+                  <li key={index} className="flex gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-sprout-green mt-1.5 shrink-0" />
+                    <span>{point}</span>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
