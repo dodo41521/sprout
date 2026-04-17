@@ -169,16 +169,20 @@ export default function App() {
                   <h4 className="font-bold text-sm mb-6 flex items-center gap-2">
                     <Award size={16} className="text-sprout-green" /> Activities
                   </h4>
-                  <div className="space-y-4">
-                    <div className="border-l-2 border-sprout-accent pl-5 py-1">
+                  <div className="space-y-6">
+                    <div className="border-l-2 border-sprout-accent pl-5 space-y-2">
                       <p className="text-[11px] font-bold text-sprout-green">2026 ~</p>
-                      <p className="text-[14px] text-slate-800">한성대학교 영화 동아리 '영화 다솜' 감독 팀장</p>
-                      <p className="text-[11px] text-slate-400 mt-1">FHFP 2026 운영위원회 기획팀원</p>
+                      <div className="space-y-1">
+                        <p className="text-[14px] text-slate-800">한성대학교 영화 동아리 '영화 다솜' 감독 팀장</p>
+                        <p className="text-[14px] text-slate-800">FHFP 2026 운영위원회 기획팀원</p>
+                      </div>
                     </div>
-                    <div className="border-l-2 border-sprout-accent pl-5 py-1">
+                    <div className="border-l-2 border-sprout-accent pl-5 space-y-2">
                       <p className="text-[11px] font-bold text-sprout-green">2025 ~</p>
-                      <p className="text-[14px] text-slate-800">한성대학교 영화 동아리 '영화 다솜' 활동</p>
-                      <p className="text-[11px] text-slate-400 mt-1">한국사능력검정시험 2급 취득 (2025.08.09)</p>
+                      <div className="space-y-1">
+                        <p className="text-[14px] text-slate-800">한성대학교 영화 동아리 '영화 다솜' 활동</p>
+                        <p className="text-[14px] text-slate-800">한국사능력검정시험 2급 취득 (2025.08.09)</p>
+                      </div>
                     </div>
                   </div>
                 </div>
