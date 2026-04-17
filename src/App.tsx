@@ -27,8 +27,13 @@ const getAssetUrl = (url: string) => {
   // Clean the path
   const path = url.startsWith('/') ? url.slice(1) : url;
   
-  // Use relative path with ./ to be most compatible with various hosting setups
-  return `./${path}`;
+  // Build a strict absolute URL based on the current page location
+  // This is the most robust way to handle sub-paths on GitHub Pages
+  try {
+    return new URL(path, window.location.href).href;
+  } catch (e) {
+    return path;
+  }
 };
 
 interface Project {
@@ -462,7 +467,7 @@ export default function App() {
             <p className="font-serif italic text-slate-500 normal-case tracking-normal mb-4">
               "작은 새싹이 커다란 나무가 되듯, 제 이야기도 끊임없이 성장하고 있습니다."
             </p>
-            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.0.6)
+            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.0.7)
           </footer>
         </div>
       </div>
