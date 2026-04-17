@@ -23,9 +23,11 @@ import {
 
 const getAssetUrl = (url: string) => {
   if (!url || url.startsWith('http')) return url;
-  // For GitHub Pages and other sub-path deployments, 
-  // keeping paths relative to the root of the app is safest.
-  return url.startsWith('/') ? url.slice(1) : url;
+  
+  // Strip leading slash to make it truly relative from index.html
+  // and compatible with base: './' in vite config
+  const cleanUrl = url.startsWith('/') ? url.slice(1) : url;
+  return cleanUrl;
 };
 
 interface Project {
