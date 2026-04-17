@@ -234,7 +234,7 @@ const ImageSlider = ({ images }: { images: string[] }) => {
       {errorPath ? (
         <div className="flex flex-col items-center justify-center text-center p-6 space-y-4">
           <div className="p-4 bg-red-50 rounded-2xl border border-red-100">
-            <p className="text-red-500 font-bold text-sm mb-2">이미지 로드 실패 (v1.1.2)</p>
+            <p className="text-red-500 font-bold text-sm mb-2">이미지 로드 실패 (v1.2.1)</p>
             <code className="text-[10px] break-all text-slate-500 bg-white p-2 block rounded border border-slate-200">
               {errorPath}
             </code>
@@ -268,13 +268,13 @@ const ImageSlider = ({ images }: { images: string[] }) => {
       
       {images.length > 1 && (
         <>
-          <button onClick={prev} className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/20 backdrop-blur-md text-slate-800 flex items-center justify-center hover:bg-white/50 transition-all opacity-0 group-hover:opacity-100">
-            <ChevronLeft size={20} />
+          <button onClick={prev} className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/40 backdrop-blur-md text-slate-800 flex items-center justify-center hover:bg-white/80 transition-all z-30 shadow-md">
+            <ChevronLeft size={24} />
           </button>
-          <button onClick={next} className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/20 backdrop-blur-md text-slate-800 flex items-center justify-center hover:bg-white/50 transition-all opacity-0 group-hover:opacity-100">
-            <ChevronRight size={20} />
+          <button onClick={next} className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/40 backdrop-blur-md text-slate-800 flex items-center justify-center hover:bg-white/80 transition-all z-30 shadow-md">
+            <ChevronRight size={24} />
           </button>
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-30">
             {images.map((_, i) => (
               <div key={i} className={`w-1.5 h-1.5 rounded-full transition-all ${i === currentIndex ? "bg-white w-4" : "bg-white/50"}`} />
             ))}
@@ -512,7 +512,7 @@ export default function App() {
             <p className="font-serif italic text-slate-500 normal-case tracking-normal mb-4">
               "작은 새싹이 커다란 나무가 되듯, 제 이야기도 끊임없이 성장하고 있습니다."
             </p>
-            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.2.0)
+            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.2.1)
           </footer>
         </div>
       </div>
