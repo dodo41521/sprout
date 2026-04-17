@@ -23,17 +23,36 @@ import {
 
 const getAssetUrl = (url: string) => {
   if (!url || url.startsWith('http')) return url;
-  
-  // Clean the path
   const path = url.startsWith('/') ? url.slice(1) : url;
-  
-  // Build a strict absolute URL based on the current page location
-  // This is the most robust way to handle sub-paths on GitHub Pages
-  try {
-    return new URL(path, window.location.href).href;
-  } catch (e) {
-    return path;
-  }
+  return `./${path}`;
+};
+
+const SmartImage = ({ src, alt, className, onError }: { src: string, alt: string, className?: string, onError: (path: string) => void }) => {
+  const [triedPublic, setTriedPublic] = useState(false);
+  const [currentSrc, setCurrentSrc] = useState(getAssetUrl(src));
+
+  const handleLocalError = () => {
+    if (!triedPublic) {
+      setTriedPublic(true);
+      const fallback = `./public/${src.startsWith('/') ? src.slice(1) : src}`;
+      setCurrentSrc(fallback);
+    } else {
+      onError(currentSrc);
+    }
+  };
+
+  return (
+    <motion.img
+      key={currentSrc}
+      src={currentSrc}
+      alt={alt}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className={className}
+      onError={handleLocalError}
+    />
+  );
 };
 
 interface Project {
@@ -159,7 +178,7 @@ const SectionTitle = ({ children, subtitle }: { children: React.ReactNode; subti
   </div>
 );
 
-const Card = ({ project, onClick }: { project: Project; onClick: () => void }) => (
+const Card: React.FC<{ project: Project; onClick: () => void }> = ({ project, onClick }) => (
   <motion.div 
     layoutId={`card-${project.id}`}
     onClick={onClick}
@@ -196,26 +215,22 @@ const ImageSlider = ({ images }: { images: string[] }) => {
       {errorPath ? (
         <div className="flex flex-col items-center justify-center text-center p-6 space-y-4">
           <div className="p-4 bg-red-50 rounded-2xl border border-red-100">
-            <p className="text-red-500 font-bold text-sm mb-2">이미지 로드 실패</p>
+            <p className="text-red-500 font-bold text-sm mb-2">이미지 로드 실패 (v1.0.8)</p>
             <code className="text-[10px] break-all text-slate-500 bg-white p-2 block rounded border border-slate-200">
               {errorPath}
             </code>
           </div>
-          <p className="text-[11px] text-slate-400">파일이 public 폴더에 있는지, 이름이 정확한지 확인해 주세요.</p>
+          <p className="text-[11px] text-slate-400">사진 파일이 실제로 존재하는지 확인이 필요합니다.</p>
         </div>
       ) : (
         <AnimatePresence mode="wait">
-          <motion.img
-            key={currentIndex}
-            src={currentPath}
+          <SmartImage
+            src={images[currentIndex]}
             alt={`Project Image ${currentIndex + 1}`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
             className="max-w-full max-h-[70vh] w-auto h-auto object-contain block relative z-10 shadow-lg bg-white"
-            onError={() => {
-              console.error("Image load failed:", currentPath);
-              setErrorPath(currentPath);
+            onError={(path) => {
+              console.error("All image load attempts failed");
+              setErrorPath(path);
             }}
           />
         </AnimatePresence>
@@ -467,7 +482,7 @@ export default function App() {
             <p className="font-serif italic text-slate-500 normal-case tracking-normal mb-4">
               "작은 새싹이 커다란 나무가 되듯, 제 이야기도 끊임없이 성장하고 있습니다."
             </p>
-            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.0.7)
+            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.0.8 - Final)
           </footer>
         </div>
       </div>
