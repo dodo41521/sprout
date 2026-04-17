@@ -21,60 +21,7 @@ import {
   ChevronRight
 } from "lucide-react";
 
-const getAssetUrl = (url: string) => {
-  if (!url || url.startsWith('http')) return url;
-  const path = url.startsWith('/') ? url.slice(1) : url;
-  // GitHub Pages fixed path strategy: /sprout/filename.jpg
-  return `/sprout/${path}`;
-};
 
-const SmartImage = ({ src, alt, className, onError }: { src: string, alt: string, className?: string, onError: (path: string) => void }) => {
-  const [retryCount, setRetryCount] = useState(0);
-  const [currentSrc, setCurrentSrc] = useState(getAssetUrl(src));
-
-  // Reset state when the source image changes
-  React.useEffect(() => {
-    setRetryCount(0);
-    setCurrentSrc(getAssetUrl(src));
-  }, [src]);
-
-  const handleLocalError = () => {
-    const filename = src.startsWith('/') ? src.slice(1) : src;
-    const cacheBuster = `?v=${retryCount + 1}`;
-    
-    // Attempt 1: Direct absolute URL (bypass all relative issues)
-    if (retryCount === 0) {
-      setRetryCount(1);
-      setCurrentSrc(`https://dodo41521.github.io/sprout/${filename}${cacheBuster}`);
-    } 
-    // Attempt 2: Simple relative
-    else if (retryCount === 1) {
-      setRetryCount(2);
-      setCurrentSrc(`./${filename}${cacheBuster}`);
-    } 
-    // Attempt 3: Public prefix retry
-    else if (retryCount === 2) {
-      setRetryCount(3);
-      setCurrentSrc(`./public/${filename}${cacheBuster}`);
-    }
-    else {
-      onError(currentSrc);
-    }
-  };
-
-  return (
-    <motion.img
-      key={currentSrc}
-      src={currentSrc}
-      alt={alt}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className={`${className} bg-slate-100 transition-opacity duration-300`}
-      onError={handleLocalError}
-    />
-  );
-};
 
 interface Project {
   id: string;
@@ -86,7 +33,6 @@ interface Project {
   period: string;
   members: string;
   body: string;
-  images: string[];
   focusPoints: string[];
 }
 
@@ -102,11 +48,6 @@ const PROJECTS: Project[] = [
     period: "2025년 5월 1일 ~ 6월 30일",
     members: "6명",
     body: `시나리오 및 콘티 작성, 일촬표 작성, 촬영 디렉팅 등 작품 제작의 총괄을 맡았습니다.\n\n1학년으로서 첫 팀 작업이었고, 팀원 대부분이 선배여서 초반에는 역할 분배와 현장 운영에 서툶이 있었습니다. 하지만 촬영 딜레이를 방지하기 위해 디렉팅을 최대한 구체적으로 준비하였고 카메라 리허설이 어려운 장면의 경우, 촬영용 콘티를 추가 제작해 공유했습니다.\n\n그 결과 촬영 현장에서 큰 딜레이 없이 장면을 완성할 수 있었습니다. 이를 토대로 팀원 간의 소통과 감독의 디렉팅이 매우 중요함을 깨달았습니다. 이후에는 팀 운영과 사전 준비를 더욱 체계적으로 설계하는 데 기준을 두게 되었습니다.`,
-    images: [
-      "poison-1.jpg",
-      "poison-2.jpg",
-      "poison-3.jpg"
-    ],
     focusPoints: [
       "작품 제작 전반의 총괄 디렉팅 경험",
       "구체적인 디렉팅 준비로 촬영 지연 방지",
@@ -123,12 +64,6 @@ const PROJECTS: Project[] = [
     period: "2025년 9월 14일 ~ 12월 26일",
     members: "10명",
     body: `시나리오 및 콘티 작성, 일촬표 작성, 촬영 디렉팅 등 작품 제작의 총괄을 맡았습니다.\n\n제작 1에서 미숙한 점을 보완하기 위해 효율적인 역할 분배와 체계적인 팀 운영을 위해 노력하였고 장비 및 로케이션 협의, 편집에도 더욱 신경을 썼습니다.\n\n이를 통해 보다 완성도 있는 작품을 제작했고, 동아리 상영회 때 '동계 영화 당선작'에 선정되어 현재는 이 작품을 30분 이상의 영화로 추가 제작 중에 있습니다.`,
-    images: [
-      "your-1.jpg",
-      "your-2.jpg",
-      "your-3.jpg",
-      "your-4.jpg"
-    ],
     focusPoints: [
       "효율적인 역할 분배 및 체계적인 팀 운영",
       "로케이션 협의 및 편집 등 작품 완성도 보완",
@@ -145,11 +80,6 @@ const PROJECTS: Project[] = [
     period: "2025년 1월 5일 ~ 현재",
     members: "미리캔버스, VLLO",
     body: `수산 교회 청소년부에서 미디어 교사로 활동하며 청소년부 아카이브용으로 직접 인스타그램 계정을 만들어 온라인 주보, 예배 스케치, 릴스, 수련회 영상 편집 등을 제작 및 총괄하고 있습니다.\n\n현재 트렌드에 맞추어 릴스를 제작하여 최대 조회수 3.3만 회에 도달했고, 계정을 직접 운영함으로써 콘텐츠 기획 능력과 디자인 및 편집 실력이 향상되었습니다.`,
-    images: [
-      "in-1.jpg",
-      "in-2.jpg",
-      "in-3.jpg"
-    ],
     focusPoints: [
       "인스타그램 아카이브 계정 기획 및 운영",
       "릴스 제작을 통한 조회수 3.3만 회 달성",
@@ -166,7 +96,6 @@ const PROJECTS: Project[] = [
     period: "2026.03 ~ 07",
     members: "운영진 전체",
     body: `여러 대학의 영화 동아리들이 하나의 목표를 위해 모여 영화제를 만들어가는 과정에 기획팀원으로 참여하며, 단순한 행사 준비를 넘어 다양한 사람들과의 협업과 소통을 경험하고 있습니다.\n\n각 학교마다 서로 다른 분위기와 제작 방식, 그리고 영화에 대한 관점이 존재하기 때문에 이를 조율하고 하나의 방향성으로 이끌어가는 과정은 쉽지 않지만, 그만큼 의미 있는 배움의 기회가 되고 있습니다.`,
-    images: ["fhfp-1.png"],
     focusPoints: [
       "전국 18개 대학 연합 영화제 기획",
       "다양한 동아리 간의 제작 방식 조율",
@@ -216,83 +145,6 @@ const Card: React.FC<{ project: Project; onClick: () => void }> = ({ project, on
   </motion.div>
 );
 
-const ImageSlider = ({ images }: { images: string[] }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [errorPath, setErrorPath] = useState<string | null>(null);
-
-  const next = () => {
-    setCurrentIndex((prev) => (prev + 1) % images.length);
-    setErrorPath(null);
-  };
-  const prev = () => {
-    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
-    setErrorPath(null);
-  };
-
-  const currentPath = getAssetUrl(images[currentIndex]);
-
-  return (
-    <div className="relative w-full min-h-[300px] md:min-h-[500px] rounded-3xl overflow-hidden bg-slate-50 flex items-center justify-center group p-4 md:p-8">
-      {errorPath ? (
-        <div className="flex flex-col items-center justify-center text-center p-6 space-y-4">
-          <div className="p-4 bg-red-50 rounded-2xl border border-red-100">
-            <p className="text-red-500 font-bold text-sm mb-2">이미지 로드 실패 (v1.3.0)</p>
-            <div className="space-y-1 mb-2">
-              <p className="text-[10px] text-slate-400 font-bold">찾으려는 파일명:</p>
-              <code className="text-[11px] font-bold text-slate-700 bg-white px-2 py-1 block rounded border border-slate-200">
-                {images[currentIndex]}
-              </code>
-            </div>
-            <p className="text-[10px] text-slate-400 font-bold">최종 시도 주소:</p>
-            <code className="text-[9px] break-all text-slate-500 bg-white p-2 block rounded border border-slate-200">
-              {errorPath}
-            </code>
-          </div>
-          <div className="space-y-2">
-            <p className="text-[11px] text-slate-400">사진 파일이 실제로 존재하는지 확인이 필요합니다.</p>
-            <a 
-              href={errorPath} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-block text-[10px] text-sprout-green font-bold underline cursor-pointer"
-            >
-              직접 링크 확인하기
-            </a>
-          </div>
-        </div>
-      ) : (
-        <AnimatePresence mode="wait">
-          <SmartImage
-            key={images[currentIndex]}
-            src={images[currentIndex]}
-            alt={`Project Image ${currentIndex + 1}`}
-            className="max-w-full max-h-[70vh] w-auto h-auto object-contain block relative z-10 shadow-lg bg-white"
-            onError={(path) => {
-              console.error("All image load attempts failed");
-              setErrorPath(path);
-            }}
-          />
-        </AnimatePresence>
-      )}
-      
-      {images.length > 1 && (
-        <>
-          <button onClick={prev} className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/40 backdrop-blur-md text-slate-800 flex items-center justify-center hover:bg-white/80 transition-all z-30 shadow-md">
-            <ChevronLeft size={24} />
-          </button>
-          <button onClick={next} className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/40 backdrop-blur-md text-slate-800 flex items-center justify-center hover:bg-white/80 transition-all z-30 shadow-md">
-            <ChevronRight size={24} />
-          </button>
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-30">
-            {images.map((_, i) => (
-              <div key={i} className={`w-1.5 h-1.5 rounded-full transition-all ${i === currentIndex ? "bg-white w-4" : "bg-white/50"}`} />
-            ))}
-          </div>
-        </>
-      )}
-    </div>
-  );
-};
 
 const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => void }) => (
   <motion.div
@@ -304,67 +156,76 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
   >
     <motion.div
       layoutId={`card-${project.id}`}
-      className="bg-white w-full max-w-4xl max-h-[90vh] rounded-[40px] shadow-2xl overflow-hidden flex flex-col"
+      className="bg-white w-full max-w-2xl max-h-[85vh] rounded-[40px] shadow-2xl overflow-hidden flex flex-col"
       onClick={e => e.stopPropagation()}
     >
       <div className="flex-1 overflow-y-auto custom-scrollbar">
-        <div className="p-6 md:p-10">
-          <div className="flex justify-between items-start mb-6">
-            <div>
+        <div className="p-8 md:p-12">
+          <div className="flex justify-between items-start mb-8">
+            <div className="flex-1">
               <span className="inline-block px-3 py-1 bg-sprout-accent text-slate-700 text-[10px] font-bold rounded-[10px] mb-4 uppercase tracking-wider">
                 {project.badge}
               </span>
-              <h2 className="text-[32px] md:text-[44px] font-sans font-bold text-slate-900 mb-1 tracking-tight leading-tight">{project.detailTitle}</h2>
-              <div className="text-lg text-sprout-green font-sans font-bold leading-relaxed">
+              <h2 className="text-[32px] md:text-[44px] font-serif text-slate-900 mb-4 tracking-tight leading-tight">{project.detailTitle}</h2>
+              <div className="text-lg text-sprout-green font-medium leading-relaxed italic border-l-2 border-sprout-accent pl-4 font-sans">
                 {project.subtitle.split("\n").map((line, i) => (
                   <p key={i}>{line}</p>
                 ))}
               </div>
             </div>
-            <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+            <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors ml-4 shrink-0">
               <X className="text-slate-400" />
             </button>
           </div>
 
-          <ImageSlider images={project.images} />
-
-          <div className="mt-12 grid md:grid-cols-[1fr_250px] gap-12">
+          <div className="space-y-12">
             <div>
-              <h4 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-6 border-b border-slate-100 pb-2">작품 정보</h4>
-              <div className="grid grid-cols-2 gap-8 mb-10">
+              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6 border-b border-slate-100 pb-2">작품 개요</h4>
+              <div className="grid grid-cols-2 gap-8">
                 <div>
-                  <p className="text-[10px] font-bold text-sprout-green uppercase tracking-widest mb-1">제작 기간</p>
+                  <p className="text-[10px] font-bold text-sprout-green uppercase tracking-widest mb-1 font-sans">제작 기간</p>
                   <p className="text-slate-800 font-medium">{project.period}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-sprout-green uppercase tracking-widest mb-1">
+                  <p className="text-[10px] font-bold text-sprout-green uppercase tracking-widest mb-1 font-sans">
                     {project.id === "insta" ? "제작 프로그램" : "제작 인원"}
                   </p>
                   <p className="text-slate-800 font-medium">{project.members}</p>
                 </div>
               </div>
-              
-              <h4 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-6 border-b border-slate-100 pb-2">상세 이야기</h4>
-              <div className="text-slate-600 leading-relaxed text-[15px] space-y-4">
+            </div>
+
+            <div>
+              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6 border-b border-slate-100 pb-2">상세 이야기</h4>
+              <div className="text-slate-600 leading-relaxed text-[15px] space-y-6">
                 {project.body.split("\n\n").map((para, i) => (
                   <p key={i}>{para}</p>
                 ))}
               </div>
             </div>
 
-            <div className="bg-sprout-light/20 p-8 rounded-3xl h-fit">
-              <p className="text-sm font-bold text-sprout-green mb-4">Focus Points</p>
-              <ul className="text-xs space-y-4 text-slate-600 leading-relaxed">
+            <div className="bg-slate-50 p-8 rounded-[30px] border border-slate-100">
+              <h4 className="text-xs font-bold text-sprout-green uppercase tracking-widest mb-6 font-sans text-center">핵심 포인트</h4>
+              <ul className="space-y-4">
                 {project.focusPoints.map((point, index) => (
-                  <li key={index} className="flex gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-sprout-green mt-1.5 shrink-0" />
-                    <span>{point}</span>
+                  <li key={index} className="flex gap-4 items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                    <span className="w-2 h-2 rounded-full bg-sprout-green shrink-0" />
+                    <span className="text-sm text-slate-700 font-medium">{point}</span>
                   </li>
                 ))}
               </ul>
             </div>
           </div>
         </div>
+      </div>
+      
+      <div className="p-6 md:px-12 md:py-8 bg-slate-50 border-t border-slate-100 flex justify-center">
+        <button 
+          onClick={onClose}
+          className="px-12 py-4 bg-slate-900 text-white rounded-full font-bold text-sm hover:scale-105 transition-all shadow-xl active:scale-95"
+        >
+          돌아가기
+        </button>
       </div>
     </motion.div>
   </motion.div>
@@ -521,7 +382,7 @@ export default function App() {
             <p className="font-serif italic text-slate-500 normal-case tracking-normal mb-4">
               "작은 새싹이 커다란 나무가 되듯, 제 이야기도 끊임없이 성장하고 있습니다."
             </p>
-            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.3.0)
+            &copy; 2026 Kim Yoon-jin. All Rights Reserved. (v1.4.0)
           </footer>
         </div>
       </div>
