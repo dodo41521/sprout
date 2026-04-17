@@ -13,6 +13,9 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     @apply text-slate-800 font-sans antialiased min-h-screen bg-sprout-yellow;
     background-image: 
